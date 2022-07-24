@@ -1,0 +1,22 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  LIST_URL: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+
+tasks:
+  update:
+    desc: Download the latest default pihole blocklist
+    cmds:
+      # download the latest file
+      - curl {{ .LIST_URL }} -o pihole_default_blocklist
+      # split the file into two parts
+      # the first part is a bunch of default hosts
+      # entries that work for pihole but we dont really want
+      # the second part is actual blackholes
+      - cat pihole_default_blocklist | split -p "Start StevenBlack"
+      # we end up with xaa and xab
+      # find all the actual routes, ignoring comments
+      - cat xab | grep -e "^0.0.0.0" | cut -d" " -f2 > urls_to_block
+
