@@ -6,7 +6,7 @@ vars:
   LIST_URL: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 
 tasks:
-  update:
+  update_pihole_list:
     desc: Download the latest default pihole blocklist
     cmds:
       # download the latest file
@@ -20,3 +20,8 @@ tasks:
       # find all the actual routes, ignoring comments
       - cat xab | grep -e "^0.0.0.0" | cut -d" " -f2 > urls_to_block
 
+  sync_with_mikrotik:
+    desc: "Sync with mikrotik"
+    cmds:
+      - terraform init
+      - terraform plan
